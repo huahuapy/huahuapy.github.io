@@ -309,6 +309,341 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://huahuapy.github.io/2020/12/31/vue%E9%AB%98%E7%BA%A7%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learn & Share">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/12/31/vue%E9%AB%98%E7%BA%A7%EF%BC%88%E4%BA%8C%EF%BC%89/" itemprop="url">vue高级（二）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-31T19:59:26+08:00">
+                2020-12-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/vue/" itemprop="url" rel="index">
+                    <span itemprop="name">vue</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="动态组件"><a href="#动态组件" class="headerlink" title="动态组件"></a>动态组件</h5><p>​    什么时候用动态组件，就是这块要渲染的组件自己也不确定，到底渲染什么由变化的数据来决定。这个时候就用动态组件。</p>
+<p>比如：</p>
+<p>组件中data中有个值是comName：’Input’，这个comName是变量，此时指向Input组件名</p>
+<p>当在模板中出现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">   &lt;component :is&#x3D;&quot;comName&quot;&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+<p>此时渲染的就是Input组件。当comName确定的组件名发生变化，渲染的组件也就发生了变化。</p>
+<h5 id="异步组件（性能优化）"><a href="#异步组件（性能优化）" class="headerlink" title="异步组件（性能优化）"></a>异步组件（性能优化）</h5><p>​    当某些需要引入的组件体积特别大时，会导致页面加载速度变慢，而且在后续的打包过程中也会使打包体积增大，最终体验感极差。所以考虑异步动态引入</p>
+<p>​    如果使用的是以下import的引入方式，就是同步引入， 页面加载时一定会同时也加载这个组件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import SlotDemo3 from &#39;..&#x2F;components&#x2F;SlotDemo3&#39;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &#39;Home&#39;,</span><br><span class="line">  components: &#123;</span><br><span class="line">    SlotDemo3</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    那怎么才能异步引入？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">export default &#123;</span><br><span class="line">  name: &#39;Home&#39;,</span><br><span class="line">  components: &#123;</span><br><span class="line">    SlotDemo3: () &#x3D;&gt; import (&#39;..&#x2F;components&#x2F;SlotDemo3&#39;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    这种异步组件的引入方式可以使组件只在使用时才被加载，不需要使用的话就不加载</p>
+<h5 id="缓存组件-keep-alive（性能优化）"><a href="#缓存组件-keep-alive（性能优化）" class="headerlink" title="缓存组件-keep alive（性能优化）"></a>缓存组件-keep alive（性能优化）</h5><p>​    如果切换频繁但是又不必重新渲染，就可以使用缓存组件的技术。</p>
+<p>​    比如，组件中引入三个子组件，在子组件中频繁切换，会发现如果不利用缓存组件技术，每个组件都会不断地销毁又重新渲染，性能比较差。</p>
+<p>父：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">  &lt;button class&#x3D;&quot;box&quot; @click&#x3D;&quot;changeState(&#39;A&#39;)&quot;&gt;A&lt;&#x2F;button&gt;</span><br><span class="line">  &lt;button class&#x3D;&quot;box&quot; @click&#x3D;&quot;changeState(&#39;B&#39;)&quot;&gt;B&lt;&#x2F;button&gt;</span><br><span class="line">  &lt;button class&#x3D;&quot;box&quot; @click&#x3D;&quot;changeState(&#39;C&#39;)&quot;&gt;C&lt;&#x2F;button&gt;</span><br><span class="line"></span><br><span class="line">  &lt;KeepAliveComA v-if&#x3D;&quot;state&#x3D;&#x3D;&#x3D;&#39;A&#39;&quot;&#x2F;&gt;</span><br><span class="line">  &lt;KeepAliveComB v-if&#x3D;&quot;state&#x3D;&#x3D;&#x3D;&#39;B&#39;&quot;&#x2F;&gt;</span><br><span class="line">  &lt;KeepAliveComC v-if&#x3D;&quot;state&#x3D;&#x3D;&#x3D;&#39;C&#39;&quot;&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+<p>子（以KeepAliveComA为例）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;h4 class&#x3D;&quot;stateShow&quot;&gt;A&lt;&#x2F;h4&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    console.log(&#39;A mounted&#39;)</span><br><span class="line">  &#125;,</span><br><span class="line">  destroyed () &#123;</span><br><span class="line">    console.log(&#39;A destroyed&#39;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+<p>当点击button进行切换时，打开控制台会发现：</p>
+<img src="/2020/12/31/vue%E9%AB%98%E7%BA%A7%EF%BC%88%E4%BA%8C%EF%BC%89/%E7%BC%93%E5%AD%98%E7%BB%84%E4%BB%B61.jpg" class title="未进行缓存组件">
+
+<p>的确一点击就会引发组件的频繁渲染，这是不必要的。</p>
+<p>所以可以利用**<keep-alive></keep-alive>**</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive&gt;</span><br><span class="line">    &lt;KeepAliveComA v-if&#x3D;&quot;state&#x3D;&#x3D;&#x3D;&#39;A&#39;&quot;&#x2F;&gt;</span><br><span class="line">    &lt;KeepAliveComB v-if&#x3D;&quot;state&#x3D;&#x3D;&#x3D;&#39;B&#39;&quot;&#x2F;&gt;</span><br><span class="line">    &lt;KeepAliveComC v-if&#x3D;&quot;state&#x3D;&#x3D;&#x3D;&#39;C&#39;&quot;&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;keep-alive&gt;</span><br></pre></td></tr></table></figure>
+<p>这样反复点击很多次每个组件也就最多渲染一次，并不会销毁。</p>
+<img src="/2020/12/31/vue%E9%AB%98%E7%BA%A7%EF%BC%88%E4%BA%8C%EF%BC%89/%E7%BC%93%E5%AD%98%E7%BB%84%E4%BB%B62.jpg" class title="缓存组件">
+
+<h5 id="mixin"><a href="#mixin" class="headerlink" title="mixin"></a>mixin</h5><p>​    多个组件间逻辑或者数据有重复使用的情况，可以将这一部分抽离出来，想要使用的时候可以引入，引入的公共逻辑部分就会与原本组件中的数据/逻辑整合在一起，这种技术就叫mixin， 就是混合。</p>
+<p>如抽离出公共部分形成了js代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">export default &#123;</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      city: &#39;HF&#39;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    showMe () &#123;</span><br><span class="line">      console.log(&#39;I am mixin &#39;, this.name)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    console.log(&#39;mixin mounted&#39;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如何混入？</p>
+<p>其实vue已经提供了方便的混入方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;h3 style&#x3D;&quot;color: red;&quot;&gt;mixin&lt;&#x2F;h3&gt;</span><br><span class="line">    &lt;p&gt;&#123;&#123;city&#125;&#125;&lt;&#x2F;p&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import myMinxin from &#39;..&#x2F;mixin&#x2F;mixin&#39;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &#39;VueHigh2&#39;,</span><br><span class="line">  mixins: [myMinxin],</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      name: &#39;Betty&#39;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    console.log(&#39;father mounted&#39;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+<p>显示如下：</p>
+<img src="/2020/12/31/vue%E9%AB%98%E7%BA%A7%EF%BC%88%E4%BA%8C%EF%BC%89/mixin.jpg" class title="mixin">
+
+<img src="/2020/12/31/vue%E9%AB%98%E7%BA%A7%EF%BC%88%E4%BA%8C%EF%BC%89/mixin2.jpg" class title="mixin">
+
+<p>可以看到，原本组件中没有city这个数据，但是在页面中可以正常显示出来，这是因为mixin中已经有相关数据并且混入了。同理，在控制台中打印出了’minxin mounted’也是因为minxin中有相同的钩子函数，也成功混入了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://huahuapy.github.io/2020/12/31/vue%E9%AB%98%E7%BA%A7%EF%BC%88%E4%B8%80%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Learn & Share">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/12/31/vue%E9%AB%98%E7%BA%A7%EF%BC%88%E4%B8%80%EF%BC%89/" itemprop="url">vue高级（一）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-31T15:03:42+08:00">
+                2020-12-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/vue/" itemprop="url" rel="index">
+                    <span itemprop="name">vue</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h5 id="自定义v-model"><a href="#自定义v-model" class="headerlink" title="自定义v-model"></a>自定义v-model</h5><p>​    很多人都知道Vue中表单项的双向绑定，也就是v-model的应用。其实，我们也可以自定义v-model。</p>
+<p>​    如在一组父子组件中，子组件中的input与父组件data中的数据要进行双向绑定，那么父组件是：</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/12/31/vue%E9%AB%98%E7%BA%A7%EF%BC%88%E4%B8%80%EF%BC%89/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://huahuapy.github.io/2020/12/30/hexo%E4%B8%AD%E5%9B%BE%E7%89%87%E4%B8%8D%E8%83%BD%E6%98%BE%E7%A4%BA%E7%9A%84%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1100,7 +1435,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1111,7 +1446,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1122,7 +1457,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -1159,7 +1494,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
