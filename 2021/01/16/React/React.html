@@ -1,0 +1,282 @@
+<hr>
+<p>title: React<br>date: 2021-01-16 17:09:09<br>tags: React<br>categories: React<br>images: “/images/文章摘要配图/react.jpg”</p>
+<hr>
+<h5 id="关于React"><a href="#关于React" class="headerlink" title="关于React"></a>关于React</h5><ul>
+<li><p>不同于Vue， 事件绑定和触发都是在相关元素上， React中<strong>触发事件是元素，但是挂载在document上</strong></p>
+</li>
+<li><p><strong>React中的event不是原生的event</strong>， 是React封装的， 是SyntheticEvent。而event.nativeEvent是原生的。</p>
+<ul>
+<li>event.target指向当前元素，是指当前元素触发</li>
+<li>event.currentTarget也指向当前元素，本来意指绑定当前元素，但这是假象，因为这个event被封装好了</li>
+<li>event.nativeEvent.target指向当前元素，当前元素触发</li>
+<li>event.nativeTarget.currentTarget指向document，表示挂载在document</li>
+</ul>
+</li>
+<li><p><strong>受控组件与非受控组件</strong></p>
+<ul>
+<li><p>受控组件：可以通过state来控制组件中的值。如表单项：input, textarea, radio, checkbox等</p>
+<pre><code>import React, { Component } from &#39;react&#39;
+
+export default class EventDemo extends Component {
+  constructor(){
+    super()
+    this.state = {
+      name: &#39;betty&#39;,
+      age:20
+    }
+  }
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;p&gt;{this.state.name}&lt;/p&gt;
+        &lt;input value={this.state.name} onChange={this.onInputChange}&gt;&lt;/input&gt;
+      &lt;/div&gt;
+    )
+  }
+  onInputChange = (e) =&gt; {
+    this.setState({
+      name: e.target.value
+    })
+  }
+}</code></pre>
+<p>这里的input就是受控组件，通过改变state中的值就可以改变input中的value值。但是其实这个改变过程也是需要自己去操作的，需要绑定onchange.</p>
+</li>
+<li><p>非受控组件</p>
+<pre><code>constructor(props){
+    super(props)
+    this.state = {
+      title:&#39;bbbb&#39;
+    }
+
+    this.titleRef = React.createRef()
+  }
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;input defaultValue={this.state.title} ref={this.titleRef}&gt;&lt;/input&gt;
+        &lt;p&gt;{this.state.title}&lt;/p&gt;
+        &lt;button onClick={this.showTitle}&gt;显示title&lt;/button&gt;
+      &lt;/div&gt;
+    )
+  }
+
+  showTitle = () =&gt; {
+    const elem = this.titleRef.current
+    alert(elem.value)
+  }</code></pre>
+<p>在非受控组件中，state可能只是给组件付了一个初值，后来的值是不受state控制的，实际值只能通过ref</p>
+<p>（操作dom节点）获取</p>
+</li>
+</ul>
+</li>
+<li><p>**Props(组件使用)**——传递数据/函数，props数据检查</p>
+<ul>
+<li><p>回顾vue，传递函数是@add=”addTodo”(addTodo函数在父组件中定义了)，子组件通过this.$emit(‘add’, data)来调用， 传递数据则是 :list=”list”</p>
+</li>
+<li><p>React中</p>
+<pre><code>import React, { Component } from &#39;react&#39;
+import PropTypes from &#39;prop-types&#39;
+
+class Input extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      title: &#39;&#39;
+    }
+  }
+
+  render(){
+    return &lt;div&gt;
+      &lt;input value={this.state.title} onChange={this.onTitleChange}&gt;&lt;/input&gt;
+      &lt;button onClick={this.onAddTitle}&gt;添加&lt;/button&gt;
+    &lt;/div&gt;
+  }
+
+  onTitleChange = (e) =&gt; {
+    this.setState({
+      title: e.target.value
+    })
+  }
+
+  onAddTitle = () =&gt; {
+    const {addTitle} = this.props
+    addTitle(this.state.title)
+
+    this.setState({title: &#39;&#39;})
+  }
+}
+Input.propTypes = {
+  addTitle: PropTypes.func.isRequired
+}
+
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>class List extends Component {
+  constructor(props){
+    super(props)
+  }
+
+  render(){
+    const {list} = this.props
+
+    return &lt;ul&gt;
+      {list.map((item, index) =&gt; {
+        return &lt;li key={item.id}&gt;&lt;span&gt;{item.title}&lt;/span&gt;&lt;/li&gt;
+      })}
+    &lt;/ul&gt;
+  }
+}
+List.propTypes = {
+  list: PropTypes.arrayOf(PropTypes.object).isRequired
+}
+
+
+export default class Todo extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      list: [
+        {
+          id: &#39;id-1&#39;,
+          title: &#39;标题1&#39;
+        },
+        {
+          id: &#39;id-2&#39;,
+          title: &#39;标题2&#39;
+        }
+      ]
+    }
+  }
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;Input addTitle={this.addTitle} /&gt;
+        &lt;List list={this.state.list} /&gt;
+      &lt;/div&gt;
+    )
+  }
+
+  addTitle = (title) =&gt; {
+    this.setState({
+      list: this.state.list.concat({
+        id: `id-${Date.now()}`,
+        title
+      })
+    })
+  }
+}
+```</code></pre>
+<ul>
+<li><p><strong>setState</strong></p>
+<ul>
+<li><p><strong>不可变值：</strong></p>
+<ul>
+<li>this.setState({count: this.state.count++})</li>
+<li>不可变值——数组， </li>
+</ul>
+<pre><code>this.setState({
+      list1: this.state.list1.concat(100), //追加
+      list2: [...this.state.list2, 100], //追加
+      list3: this.state.list3.slice(0,3), //截取
+      list4: this.state.list4.filter(item =&gt; item &gt; 100), //筛选
+})</code></pre>
+<ul>
+<li>不可变值——对象</li>
+</ul>
+<pre><code>this.setState({
+    obj1: Object.assign({}, this.state.obj1, {a:100}),
+    obj2: {...this.state.obj2, a: 100}
+})</code></pre>
+</li>
+<li><p><strong>可能异步</strong></p>
+<ul>
+<li>异步渲染页面</li>
+</ul>
+<pre><code>state = {
+    count: 0    
+}
+this.setState({
+    count: this.state.count+1
+})
+
+console.log(this.state.count)  //0</code></pre>
+<p>​    如何拿到最新值？</p>
+<pre><code>this.setState({
+    count: this.state.count+1,
+    () =&gt; { console.log(this.state.count) }  //1
+})</code></pre>
+<ul>
+<li><p>同步情况</p>
+<p>放在setTimeout / 自己定义的dom事件中</p>
+</li>
+</ul>
+<pre><code>setTimeout(() =&gt; {
+    this.setState({
+        count: this.state.count+1
+    })
+
+    console.log(this.state.count)  //1
+})
+
+
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>clickHandler = () =&gt; {
+    this.setState({
+        count: this.state.count+1
+    })
+    console.log(this.state.count)  //1
+}
+document.body.addEventListener(&#39;click&#39;, this.clickHandler)
+```</code></pre>
+<ul>
+<li><p><strong>是否会被合并</strong></p>
+<ul>
+<li>多次传入对象，合并</li>
+</ul>
+<pre><code>this.setState({
+    count: this.state.count+1
+})
+this.setState({
+    count: this.state.count+1
+})
+this.setState({
+    count: this.state.count+1
+})</code></pre>
+<p>​    以上最终state中count是1</p>
+<ul>
+<li>传入函数，不合并</li>
+</ul>
+<pre><code>this.setState((prevState, props) =&gt; {
+    return {
+        count: prevState.count+1
+    }
+})
+this.setState((prevState, props) =&gt; {
+    return {
+        count: prevState.count+1
+    }
+})</code></pre>
+<p>this.setState((prevState, props) =&gt; {</p>
+<pre><code>return {
+    count: prevState.count+1
+}</code></pre>
+<p>})</p>
+<p>​    以上结果中count相当于+3</p>
+</li>
+<li><p><strong>生命周期</strong></p>
+<p>{% asset_img react生命周期.jpg 简化版react生命周期 %}</p>
+</li>
+</ul>
+<h5 id=""><a href="#" class="headerlink" title=""></a></h5><h5 id="React高级特性"><a href="#React高级特性" class="headerlink" title="React高级特性"></a>React高级特性</h5><ul>
+<li><p>函数组件</p>
+<p>{% asset_img react函数组件.jpg react函数组件 %}</p>
+<p>函数组件就是输入props输出jsx的纯函数，没有实例，没有生命周期，没有state</p>
+</li>
+</ul>

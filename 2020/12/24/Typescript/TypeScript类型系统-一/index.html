@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Lato, PingFang SC, Microsoft YaHei, sans-serif:300,300italic,400,400italic,700,700italic|Lato, PingFang SC, Microsoft YaHei, sans-serif:300,300italic,400,400italic,700,700italic|Lato, PingFang SC, Microsoft YaHei, sans-serif:300,300italic,400,400italic,700,700italic|Lato, PingFang SC, Microsoft YaHei, sans-serif:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="TypeScript," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原生JS类型  基础类型： number, string, boolean, null, undefined   引用类型： Object">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TypeScript类型系统(一)">
+<meta property="og:url" content="http://huahuapy.github.io/2020/12/24/Typescript/TypeScript%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E4%B8%80/index.html">
+<meta property="og:site_name" content="Betty小站">
+<meta property="og:description" content="原生JS类型  基础类型： number, string, boolean, null, undefined   引用类型： Object">
+<meta property="og:locale">
+<meta property="article:published_time" content="2020-12-24T10:02:04.000Z">
+<meta property="article:modified_time" content="2021-05-15T07:47:50.025Z">
+<meta property="article:author" content="Betty">
+<meta property="article:tag" content="TypeScript">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://huahuapy.github.io/2020/12/24/Typescript/TypeScript类型系统-一/"/>
+
+
+
+
+
+  <title>TypeScript类型系统(一) | Betty小站</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+
+  <div class="container  page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Betty小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://huahuapy.github.io/2020/12/24/Typescript/TypeScript%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F-%E4%B8%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Betty">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Betty小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TypeScript类型系统(一)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-24T18:02:04+08:00">
+                2020-12-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="原生JS类型"><a href="#原生JS类型" class="headerlink" title="原生JS类型"></a>原生JS类型</h3><ol>
+<li><p> 基础类型： number, string, boolean, null, undefined</p>
+</li>
+<li><p> 引用类型： Object</p>
+<a id="more"></a>
+<h2 id="ts数据类型"><a href="#ts数据类型" class="headerlink" title="ts数据类型"></a>ts数据类型</h2></li>
+<li><p>基础数据类型： number, string, boolean, null, undefined，Object</p>
+</li>
+<li><p>内置对象类型： Array, HtmlElement, Boolean</p>
+</li>
+<li><p>特殊类型： 元组， 枚举</p>
+</li>
+<li><p>自定义类型： interface \ type</p>
+</li>
+</ol>
+<h3 id="ts数据类型表达"><a href="#ts数据类型表达" class="headerlink" title="ts数据类型表达"></a>ts数据类型表达</h3><ol>
+<li><p>基础数据类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;number</span><br><span class="line">let a:number &#x3D; 10</span><br><span class="line">let a &#x3D; 10 &#x2F;&#x2F;这种写法其实就是类型推断，根据变量的值来推断变量的类型</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;string</span><br><span class="line">let str:string &#x3D; &#39;hi&#39;</span><br><span class="line">let str &#x3D; &#39;hi&#39;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;boolean</span><br><span class="line">let bol:boolean &#x3D; true</span><br><span class="line">let bol &#x3D; true</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;null</span><br><span class="line">let nul:null &#x3D; null</span><br><span class="line">let nul  &#x3D; null</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;undefined</span><br><span class="line">let und:undefined &#x3D; undefined</span><br><span class="line">let und &#x3D; undefined</span><br></pre></td></tr></table></figure>
+<p>在ts的基础数据类型中， Object比较复杂， 它包括数组/函数/普通对象</p>
+<ul>
+<li>下面先从<strong>数组</strong>开始：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* 数组 *&#x2F;</span><br><span class="line">&#x2F;&#x2F;数组中元素类型只能是number</span><br><span class="line">const arr:number[] &#x3D; [1, 2, 3, 4, 5]</span><br><span class="line">&#x2F;&#x2F;数组中元素类型只能是string</span><br><span class="line">const arr2:string[] &#x3D; [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]</span><br><span class="line">&#x2F;&#x2F;数组中元素类型可以是number也可以是string</span><br><span class="line">const arr3:(number|string)[] &#x3D; [1, 2, 3, &#39;a&#39;, &#39;b&#39;]</span><br><span class="line">&#x2F;&#x2F;使用Array</span><br><span class="line">const arr4:Array&lt;number&gt; &#x3D; new Array(1, 2, 3, 4, 5)</span><br><span class="line">const arr5:Array&lt;string&gt; &#x3D; new Array(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;)</span><br></pre></td></tr></table></figure>
+<p>上述所举的例子其实还是比较简单的情况， 现实应用中常常出现对象数组等复杂的情况，比如下列数组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const arr &#x3D; [&#123;</span><br><span class="line">	id: 1,</span><br><span class="line">	name: &#39;betty&#39;,</span><br><span class="line">	age: 18</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+<p>遇到这种情况，或者是内置对象类型、特殊类型等等，基本数据类型的定义已经无法满足需求，只能使用提供的自定义类型interface \ type处理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">interface ArrType &#123;</span><br><span class="line">	readonly id: number,  &#x2F;&#x2F;只读属性</span><br><span class="line">	name: string,</span><br><span class="line">	age: number,</span><br><span class="line">	sex?: string,  &#x2F;&#x2F;可选属性，可以没有</span><br><span class="line">	[propName:string]: any,  &#x2F;&#x2F;任意类型，类型key名是string类型!!!慎用!!!最好别用</span><br><span class="line">&#125;</span><br><span class="line">const arr:ArrType[] &#x3D; [&#123;</span><br><span class="line">	id: 1,</span><br><span class="line">	name: &#39;betty&#39;,</span><br><span class="line">	age: 18</span><br><span class="line">&#125;]</span><br><span class="line"></span><br><span class="line">arr[0].root &#x3D; &#39;jj&#39;  &#x2F;&#x2F;报错，已经被限定，不可以随意添加</span><br><span class="line">arr[0].id &#x3D; 2   &#x2F;&#x2F;报错，arr中的id是只读属性</span><br><span class="line">arr[0].a &#x3D; &#39;cc&#39;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;使用type也可</span><br><span class="line">type ArrType &#x3D; &#123;</span><br><span class="line">	readonly id: number,  &#x2F;&#x2F;只读属性</span><br><span class="line">	name: string,</span><br><span class="line">	age: number,</span><br><span class="line">	sex?: string,  &#x2F;&#x2F;可选属性，可以没有</span><br><span class="line">	[propName:string]: any,  &#x2F;&#x2F;任意类型，类型key名是string类型!!!慎用!!!最好别用</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>函数</strong></li>
+</ul>
+<p>原生js中函数的定义方式可以有以下几种：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. function fn () &#123;&#125;</span><br><span class="line">2. const fn &#x3D; new Function()</span><br><span class="line">3. const fn &#x3D; function() &#123;&#125;</span><br><span class="line">4. const fn &#x3D; () &#x3D;&gt; &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>而ts中对于函数的定义则多了对于函数参数和返回值的数据类型定义， 如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;函数返回值类型为string</span><br><span class="line">function fn (a:number, b:string):string &#123;</span><br><span class="line">	return a + b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;函数若是没有定义返回值类型，相当于返回值类型为void</span><br><span class="line">&#x2F;* </span><br><span class="line">function fn2 (a:number, b:string) &#123;</span><br><span class="line">	return a + b</span><br><span class="line">&#125;</span><br><span class="line">*&#x2F;</span><br><span class="line">function fn2 (a:number, b:string):void &#123;</span><br><span class="line">	return a + b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;函数抛出异常错误或是陷入死循环，返回值类型为never</span><br><span class="line">function fn3 ():never &#123;</span><br><span class="line">	throw new Error(&#39;error&#39;)</span><br><span class="line">&#125;</span><br><span class="line">function fn4 ():never &#123;</span><br><span class="line">	while(true)&#123;</span><br><span class="line">		console.log(&#39;1&#39;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;函数返回值类型有多种情况</span><br><span class="line">const fn5 &#x3D; function (a:boolean, b:string):string|boolean &#123;</span><br><span class="line">	if(a) return b</span><br><span class="line">	return false</span><br><span class="line">&#125;</span><br><span class="line">const fn6 &#x3D; (a:number, b:number):number &#x3D;&gt; a+b</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;特殊写法</span><br><span class="line">const fn7:(a:number, b:number) &#x3D;&gt; number &#x3D; (a, b) &#x3D;&gt; a+b</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;使用interface\type!!!较多使用</span><br><span class="line">interface FnType &#123;</span><br><span class="line">	(a:number, b:number):number</span><br><span class="line">&#125;</span><br><span class="line">fn8:FnType &#x3D; (a, b) &#x3D;&gt; a+b</span><br><span class="line"></span><br><span class="line">type FnType2 &#x3D; &#123;</span><br><span class="line">	(a:number, b:string):string</span><br><span class="line">&#125;</span><br><span class="line">fn9:FnType2 &#x3D; (a, b) &#x3D;&gt; a+b</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>对象</strong></li>
+</ul>
+<p>js中普通对象内键值对就以：相连，但是在ts中这个符号是用来表示类型定义的，理所当然的，ts中对象的表示方式也会发生变化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;interface\type</span><br><span class="line">interface FnType &#123;</span><br><span class="line">	(a:number, b:number):number</span><br><span class="line">&#125;</span><br><span class="line">interface ObjType &#123;</span><br><span class="line">	root: string,</span><br><span class="line">	username: string,</span><br><span class="line">	age: number,</span><br><span class="line">	fn:FnType</span><br><span class="line">&#125;</span><br><span class="line">const obj:ObjType &#x3D; &#123;</span><br><span class="line">	root: &#39;teacher&#39;,</span><br><span class="line">	username: &#39;betty&#39;,</span><br><span class="line">	age: 23,</span><br><span class="line">	fn(a, b)&#123; return a+b &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        <div>
+   
+    <div style="text-align:center;color:#bfbfbf;font-size:18px;"> 
+      <span>-------- 已经没有啦! </span> 
+      <i class="fa fa-paw"></i> 
+      <span> 感谢阅读 --------</span> 
+    </div> 
+  
+</div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/TypeScript/" rel="tag"><i class="fa fa-tag"></i>TypeScript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/12/24/Typescript/TypeScript%E7%AE%80%E4%BB%8B/" rel="next" title="TypeScript简介">
+                <i class="fa fa-chevron-left"></i> TypeScript简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/12/24/Typescript/TypeScript%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%88%E4%BA%8C%EF%BC%89/" rel="prev" title="TypeScript类型系统（二）">
+                TypeScript类型系统（二） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <a href="/">
+                <img class="site-author-image" itemprop="image"
+                  src="/images/header.jpg"
+                  alt="Betty" />
+              </a>
+            
+              <p class="site-author-name" itemprop="name">Betty</p>
+              <p class="site-description motion-element" itemprop="description">Every noble work is at first impossible.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%94%9FJS%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">原生JS类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ts%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number"></span> <span class="nav-text">ts数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ts%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%A1%A8%E8%BE%BE"><span class="nav-number">1.</span> <span class="nav-text">ts数据类型表达</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Betty</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
